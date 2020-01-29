@@ -52,30 +52,61 @@
 
 		
 		th, td{
-       	 border: 1px solid color:black;
-   	 	}
-
-
+			border: 1px solid color:black;
 		}
- 
-		h1{font-family: 'Song Myung', serif;}
-		h5{font-family: 'Noto Sans KR', sans-serif;}
-		h6.detail{font-family: 'Noto Sans KR', sans-serif;}	
-		h1.title > span {font-size: 20px} 
-		/*쩜(.)으로 호출하는 것은 id일 때만. Span은 지정된 것이라 꺽쇠(>)로 호출*/
+
+
+	}
+
+	h1{font-family: 'Song Myung', serif;}
+	h5{font-family: 'Noto Sans KR', sans-serif;}
+	h6.detail{font-family: 'Noto Sans KR', sans-serif;}	
+	h1.title > span {font-size: 20px} 
+	/*쩜(.)으로 호출하는 것은 id일 때만. Span은 지정된 것이라 꺽쇠(>)로 호출*/
 
 
 
 
-	</style>
+</style>
 
-	<script> //이름, 수량, 주소, 휴대폰번호 중 하나라도 입력되어 있지 않으면, alert이 뜨고,
-			//입력 안한 곳에 포커스가 맞춰지도록 해보세요.(JQuery의 .focus()를 이용하면 굿!)
-		
-		
+<script> 
+	
+	$(document).ready(function(){
+		listing(); 
+	});
+
+	function listing(){
+
+		$.ajax({
+			type: "GET",
+			url: "http://spartacodingclub.shop/order",
+			data: {},
+			success: function(response){
+				let oInvoice = response['orders']
 
 
-		function openClose(){
+				for (let i = 0 ; i < oInvoice.length; i++) {
+
+					let oName = oInvoice[i]['name']
+					let oQuantity = oInvoice[i]['count']
+					let oAddress = oInvoice[i]['address']
+					let oPhone = oInvoice[i]['phone']
+
+				// console.log(oName+ oQuantity + +oAddress + oPhone)
+
+				let temp_html = '<tr> \
+				<td>'+ oName +'</td>\
+				<td>'+ oQuantity + '</td>\
+				<td>'+ oAddress + '</td>\
+				<td>'+ oPhone + '</td>\ </tr>';
+
+				$('#tableBody').append(temp_html); 
+				}
+			}
+		})
+	}
+
+	function openClose(){
 
 		let mName = $('#myName').val();
 		let mQuantity =$('#myQuantity').val()
@@ -90,12 +121,12 @@
 
 
 		let invoiceRow = 
-		 '<tr>\
-          <td scope="row">' + mName + '</td>\
-          <td>' + mQuantity + '</td>\
-          <td>' + myAddress + '</td>\
-          <td>' + myPhoneNum + '</td>\
-          </tr>';
+		'<tr>\
+		<td scope="row">' + mName + '</td>\
+		<td>' + mQuantity + '</td>\
+		<td>' + myAddress + '</td>\
+		<td>' + myPhoneNum + '</td>\
+		</tr>';
 
 		for(n=0 ; n < mInvoice.length ; n++){
 			if(mInvoice[n]=='' || mInvoice[n]=='---수량을 선택하세요---'){
@@ -103,23 +134,24 @@
 				$(blankList[n]).focus();
 				return 
 			} 
-		// else if(!regExp.test(mPhoneNum)){
+		//아직 핸드폰 번호 정규식 적용은 오류 남.
+		//else if(!regExp.test(mPhoneNum)){
 		// 		alert('휴대전화번호는 형식에 맞춰 입력하세요 \n ex.010-xxxx-xxxx')
 		// 		return
 			//} 
 			else{
-			 alert('주문성공!');
-			 $('#ordertable').show()
-			 $('#tableBody').append(invoiceRow);
-		}
-
+				alert('주문성공!');
+				$('#ordertable').show()
+				$('#tableBody').append(invoiceRow);
 			}
 
 		}
-		
+
+	}
 
 
-	</script>
+
+</script>
 
 
 </head>
@@ -186,9 +218,9 @@
 
 
 			<div id="orderTable" class= "table"> <!--  style="display:none" 이거 넣기/  -->
- 				<table>
- 					<thead>
- 						<tr>
+				<table>
+					<thead>
+						<tr>
 							<th scope='col'>이름</th>
 							<th scope='col'>수량</th>
 							<th scope='col'>주소</th>
